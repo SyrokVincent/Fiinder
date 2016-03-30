@@ -41,11 +41,11 @@ public class MainActivity extends Activity {
             }
         });
 
-        final Button b = (Button) findViewById(R.id.bouton1);
+        final Button b = (Button) findViewById(R.id.send);
         b.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, ListActivity.class);
+                Intent intent = new Intent(MainActivity.this, MapActivity.class);
                 startActivity(intent);
                 //On déclare qu'on ne peut plus sélectionner d'élément
                 mListInteret.setChoiceMode(ListView.CHOICE_MODE_NONE);

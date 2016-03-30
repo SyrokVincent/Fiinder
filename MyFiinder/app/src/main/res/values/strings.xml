@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">MyFiinder</string>
     <string name="action_settings">Settings</string>
+    <string name="title_activity_map">Map</string>
+    <string name="bouton1">ALLER A MAP</string>
+
 </resources>

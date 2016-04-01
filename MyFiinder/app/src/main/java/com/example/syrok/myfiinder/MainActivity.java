@@ -1,60 +1,101 @@
 package com.example.syrok.myfiinder;
 
-import android.app.ListActivity;
-import android.content.Intent;
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.view.View;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.widget.Button;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ListView;
-import android.widget.Toast;
+import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.Collections;
+
+/**
+ * Activité permettant d'afficher les points d'intérêt proches de l'utilisateur sous forme de liste
+ */
 public class MainActivity extends Activity {
-
-    private ListView mListInteret = null;
-    private Button mSend = null;
-    private String[] mInteret = null;
-
+    private ImageButton BMainImButton;
+    private TextView pseudo = null;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        pseudo = (TextView) findViewById(R.id.pseudo);
+        /**
+         * Récupère le pseudo de l'utilisateur grâce aux données passées par HomeActivity
+         */
+        Intent i = getIntent();
+        Bundle e = i.getExtras();
+        pseudo.setText("invité");
+        if(e!=null) {
+            pseudo.setText(e.getString("pseudo"));
+        }
 
-        mListInteret = (ListView) findViewById(R.id.listInteret);
-        mSend = (Button) findViewById(R.id.send);
+        /**
+         * Met l'image dans le bouton et affecte un listener onclick
+         * Si aucune préférence n'est rentrée, lui envoie une liste avec que le premier élément de coché
+         * Sinon renvoie à la page des settings les informations que le client a rentrées
+         */
 
-        mInteret = new String[]{"Cinema", "Manger", "Restaurant", "Sport"};
-        mListInteret.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_multiple_choice, mInteret));
-        mListInteret.setItemChecked(1, true);
-
-        mSend.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-
-        final Button b = (Button) findViewById(R.id.send);
-        b.setOnClickListener(new View.OnClickListener() {
+        BMainImButton =  (ImageButton) findViewById(R.id.imageButton);
+        BMainImButton.setImageResource(R.drawable.settings);
+        BMainImButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, MapActivity.class);
+
+                Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
                 startActivity(intent);
-                //On déclare qu'on ne peut plus sélectionner d'élément
-                mListInteret.setChoiceMode(ListView.CHOICE_MODE_NONE);
-                //On affiche un layout qui ne permet pas de sélection
-                mListInteret.setAdapter(new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1, mInteret));
-
-
             }
         });
-    }
+            /**
+             * Récupère la liste grâce à getListData qui est une liste fixe pour le moment
+             * à implémenter -> Récupération des points proches de nous en fonction de NOS coordonnées
+             */
+        ArrayList lieu_details = getListData();
 
+        final ListView lv1 = (ListView) findViewById(R.id.location_list);
+        lv1.setAdapter(new CustomListAdapter(this, lieu_details));
+        lv1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            /**
+             * Gère le clic sur un élément de la ListView, récupère sa position et envoie les données longitude et latitude
+             * à la map qui sera ouverte ensuite (MapActivity)
+             * longitude et latitude sont passés en extra dans l'activité MapActivity
+             */
+            @Override
+            public void onItemClick(AdapterView<?> a, View v, int position, long id) {
+                Lieu l = (Lieu) lv1.getAdapter().getItem(position);
+                Intent intent = new Intent(MainActivity.this, MapActivity.class);
+                intent.putExtra("longitude", l.getLongitude());
+                intent.putExtra("latitude", l.getLatitude());
+                startActivity(intent);            }
+        });
+
+}
+
+    /**
+     * Permet de renvoyer la liste des points d'intérêt à proximité
+     * à implémenter avec l'API Google Maps
+     * @return
+     */
+    private ArrayList getListData() {
+        ArrayList<Lieu> results = new ArrayList<Lieu>();
+        Lieu l1 = new Lieu("Luminien", 200, "Restaurant", 4, 150, -13);
+        Lieu l2 = new Lieu("BU Luminy", 150, "Bibliothèque", (float) 3.5, 40, 35);
+        Lieu l3 = new Lieu("PizzaRedon", 350, "Fast-food", 5, 8, 22);
+        Lieu l4 = new Lieu("Laverie Luminy", 100, "Laverie", 2, 11, -9);
+        results.add(l1);
+        results.add(l2);
+        results.add(l3);
+        results.add(l4);
+        /*
+        Trie la liste en fonction de la distance
+         */
+        Collections.sort(results);
+        return results;
+    }
 }

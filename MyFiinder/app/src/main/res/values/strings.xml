@@ -1,7 +1,10 @@
 <resources>
     <string name="app_name">MyFiinder</string>
+    <string name="home_name">Page Home</string>
+    <string name="settings_name">Page Settings</string>
+    <string name="Map_name">Page Map</string>
+    <string name="list_name">Page List</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_map">Map</string>
-    <string name="bouton1">ALLER A MAP</string>
 
 </resources>

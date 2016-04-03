@@ -1,9 +1,13 @@
 package com.example.syrok.myfiinder;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -12,19 +16,28 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
+
 import java.util.ArrayList;
 import java.util.Collections;
 
 /**
  * Activité permettant d'afficher les points d'intérêt proches de l'utilisateur sous forme de liste
  */
-public class MainActivity extends Activity {
+public class MainActivity extends Activity  {
     private ImageButton BMainImButton;
     private TextView pseudo = null;
+
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
+
         pseudo = (TextView) findViewById(R.id.pseudo);
         /**
          * Récupère le pseudo de l'utilisateur grâce aux données passées par HomeActivity
@@ -32,7 +45,7 @@ public class MainActivity extends Activity {
         Intent i = getIntent();
         Bundle e = i.getExtras();
         pseudo.setText("invité");
-        if(e!=null) {
+        if (e != null) {
             pseudo.setText(e.getString("pseudo"));
         }
 
@@ -42,7 +55,7 @@ public class MainActivity extends Activity {
          * Sinon renvoie à la page des settings les informations que le client a rentrées
          */
 
-        BMainImButton =  (ImageButton) findViewById(R.id.imageButton);
+        BMainImButton = (ImageButton) findViewById(R.id.imageButton);
         BMainImButton.setImageResource(R.drawable.settings);
         BMainImButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -52,10 +65,10 @@ public class MainActivity extends Activity {
                 startActivity(intent);
             }
         });
-            /**
-             * Récupère la liste grâce à getListData qui est une liste fixe pour le moment
-             * à implémenter -> Récupération des points proches de nous en fonction de NOS coordonnées
-             */
+        /**
+         * Récupère la liste grâce à getListData qui est une liste fixe pour le moment
+         * à implémenter -> Récupération des points proches de nous en fonction de NOS coordonnées
+         */
         ArrayList lieu_details = getListData();
 
         final ListView lv1 = (ListView) findViewById(R.id.location_list);
@@ -72,10 +85,11 @@ public class MainActivity extends Activity {
                 Intent intent = new Intent(MainActivity.this, MapActivity.class);
                 intent.putExtra("longitude", l.getLongitude());
                 intent.putExtra("latitude", l.getLatitude());
-                startActivity(intent);            }
+                startActivity(intent);
+            }
         });
 
-}
+    }
 
     /**
      * Permet de renvoyer la liste des points d'intérêt à proximité
@@ -98,4 +112,6 @@ public class MainActivity extends Activity {
         Collections.sort(results);
         return results;
     }
+
+
 }

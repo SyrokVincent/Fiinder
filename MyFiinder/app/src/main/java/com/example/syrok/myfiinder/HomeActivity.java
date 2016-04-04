@@ -31,30 +31,29 @@ public class HomeActivity extends Activity implements GoogleApiClient.Connection
     protected static final String TAG = "home";
 
     // Keys for storing activity state in the Bundle.
-    protected final static String REQUESTING_LOCATION_UPDATES_KEY = "requesting-location-updates-key";
     protected final static String LOCATION_KEY = "location-key";
-    protected final static String LAST_UPDATED_TIME_STRING_KEY = "last-updated-time-string-key";
 
+
+    protected Button BHomeConnexion;
 
     private GoogleApiClient mGoogleApiClient;
     protected LocationRequest mLocationRequest;
     protected AddressResultReceiver mResultReceiver;
-    public static Location mCurrentLocation ;
+    public static Location mCurrentLocation;
     protected TextView mLatitudeText;
     protected TextView mLongitudeText;
     private boolean mAddressRequested;
-    protected TextView mAddressOutput ;
-    /**
-     * Tracks the status of the location updates request. Value changes when the user presses the
-     * Start Updates and Stop Updates buttons.
-     */
-    protected Boolean mRequestingLocationUpdates;
+    protected String mAddressOutput;
+    protected TextView mAddressText;
 
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+        mLatitudeText = (TextView) findViewById(R.id.latitude);
+        mLongitudeText = (TextView) findViewById(R.id.longitude);
+        mAddressText = (TextView) findViewById(R.id.addresse);
 
         /**
          * Bouton qui permet d'accéder à la liste des points d'intérêt sans se connecter
@@ -63,33 +62,35 @@ public class HomeActivity extends Activity implements GoogleApiClient.Connection
         BhomeSansenreg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mGoogleApiClient.isConnected() && mCurrentLocation != null) {
-                    startIntentService();
-                }
-                mAddressRequested = true;
-                //updateUIWidgets();
-
                 Intent intent = new Intent(HomeActivity.this, MainActivity.class);
                 intent.putExtra("pseudo", "Invité");
                 startActivity(intent);
             }
         });
 
-        mRequestingLocationUpdates = false;
+        BHomeConnexion = (Button) findViewById(R.id.BHomeConnexion);
+        BHomeConnexion.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mGoogleApiClient.isConnected() && mCurrentLocation != null) {
+                    startIntentService();
+                }
+                startLocationUpdates();
+                mAddressRequested = true;
+            }
+        });
+
         // Update values using data stored in the Bundle.
+        mAddressRequested = false;
+        mAddressOutput = "";
         updateValuesFromBundle(savedInstanceState);
+
         buildGoogleApiClient();
     }
 
     private void updateValuesFromBundle(Bundle savedInstanceState) {
         Log.i(TAG, "Updating values from bundle");
         if (savedInstanceState != null) {
-            // Update the value of mRequestingLocationUpdates from the Bundle, and make sure that
-            // the Start Updates and Stop Updates buttons are correctly enabled or disabled.
-            if (savedInstanceState.keySet().contains(REQUESTING_LOCATION_UPDATES_KEY)) {
-                mRequestingLocationUpdates = savedInstanceState.getBoolean(
-                        REQUESTING_LOCATION_UPDATES_KEY);
-            }
             // Update the value of mCurrentLocation from the Bundle and update the UI to show the
             // correct latitude and longitude.
             if (savedInstanceState.keySet().contains(LOCATION_KEY)) {
@@ -97,7 +98,17 @@ public class HomeActivity extends Activity implements GoogleApiClient.Connection
                 // is not null.
                 mCurrentLocation = savedInstanceState.getParcelable(LOCATION_KEY);
             }
-            if (mCurrentLocation == null) updateUI();
+            // Check savedInstanceState to see if the address was previously requested.
+            if (savedInstanceState.keySet().contains(Constants.ADDRESS_REQUESTED_KEY)) {
+                mAddressRequested = savedInstanceState.getBoolean(Constants.ADDRESS_REQUESTED_KEY);
+            }
+            // Check savedInstanceState to see if the location address string was previously found
+            // and stored in the Bundle. If it was found, display the address string in the UI.
+            if (savedInstanceState.keySet().contains(Constants.LOCATION_ADDRESS_KEY)) {
+                mAddressOutput = savedInstanceState.getString(Constants.LOCATION_ADDRESS_KEY);
+                mAddressText.setText(mAddressOutput);
+            }
+            if (mCurrentLocation != null) updateUI();
         }
     }
 
@@ -114,8 +125,8 @@ public class HomeActivity extends Activity implements GoogleApiClient.Connection
     //Parametrer la receptio de la position  http://developer.android.com/training/location/change-location-settings.html#get-settings
     protected void createLocationRequest() {
         mLocationRequest = new LocationRequest();
-        mLocationRequest.setInterval(20000);
-        mLocationRequest.setFastestInterval(10000);
+        mLocationRequest.setInterval(10000);
+        mLocationRequest.setFastestInterval(5000);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
     }
 
@@ -125,6 +136,16 @@ public class HomeActivity extends Activity implements GoogleApiClient.Connection
     protected void startLocationUpdates() {
         // The final argument to {@code requestLocationUpdates()} is a LocationListener
         // (http://developer.android.com/reference/com/google/android/gms/location/LocationListener.html).
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // No explanation needed, we can request the permission.
+
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    Constants.MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+            Log.i(TAG, "Permission not working");
+            return;
+        }
         LocationServices.FusedLocationApi.requestLocationUpdates(
                 mGoogleApiClient, mLocationRequest, this);
     }
@@ -141,8 +162,8 @@ public class HomeActivity extends Activity implements GoogleApiClient.Connection
 
     protected void startIntentService() {
         Intent intent = new Intent(this, FetchAddressIntentService.class);
-        intent.putExtra(FetchAddressIntentService.Constants.RECEIVER, mResultReceiver);
-        intent.putExtra(FetchAddressIntentService.Constants.LOCATION_DATA_EXTRA, mCurrentLocation);
+        intent.putExtra(Constants.RECEIVER, mResultReceiver);
+        intent.putExtra(Constants.LOCATION_DATA_EXTRA, mCurrentLocation);
         startService(intent);
     }
 
@@ -152,12 +173,19 @@ public class HomeActivity extends Activity implements GoogleApiClient.Connection
         Log.i(TAG, "Connected to GoogleApiClient");
 
         if (mCurrentLocation == null) {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                // No explanation needed, we can request the permission.
+
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                        Constants.MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+                Log.i(TAG, "Permission not working");
+                return;
+            }
             mCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
             if (mCurrentLocation != null) updateUI();
         }
-        if (mRequestingLocationUpdates) {
-            startLocationUpdates();
-        }
+        startLocationUpdates();
         // Determine whether a Geocoder is available.
         if (!Geocoder.isPresent()) {
             Toast.makeText(this, R.string.no_geocoder_available,
@@ -213,7 +241,7 @@ public class HomeActivity extends Activity implements GoogleApiClient.Connection
         // connection to GoogleApiClient intact.  Here, we resume receiving
         // location updates if the user has requested them.
 
-        if (mGoogleApiClient.isConnected() && mRequestingLocationUpdates) {
+        if (mGoogleApiClient.isConnected()) {
             startLocationUpdates();
         }
     }
@@ -237,7 +265,13 @@ public class HomeActivity extends Activity implements GoogleApiClient.Connection
      * Stores activity data in the Bundle.
      */
     public void onSaveInstanceState(Bundle savedInstanceState) {
-        savedInstanceState.putBoolean(REQUESTING_LOCATION_UPDATES_KEY, mRequestingLocationUpdates);
+        // Save whether the address has been requested.
+        savedInstanceState.putBoolean(Constants.ADDRESS_REQUESTED_KEY, mAddressRequested);
+
+        // Save the address string.
+        savedInstanceState.putString(Constants.LOCATION_ADDRESS_KEY, mAddressOutput);
+
+        //Save the current location.
         savedInstanceState.putParcelable(LOCATION_KEY, mCurrentLocation);
         super.onSaveInstanceState(savedInstanceState);
     }
@@ -253,17 +287,46 @@ public class HomeActivity extends Activity implements GoogleApiClient.Connection
             // Display the address string
             // or an error message sent from the intent service.
 
-            mAddressOutput.setText(String.valueOf(resultData.getString(FetchAddressIntentService.Constants.RESULT_DATA_KEY)));
-            //displayAddressOutput();
+            mAddressOutput = resultData.getString(Constants.RESULT_DATA_KEY);
+            mAddressText.setText(mAddressOutput);
 
             // Show a toast message if an address was found.
-            if (resultCode == FetchAddressIntentService.Constants.SUCCESS_RESULT) {
+            if (resultCode == Constants.SUCCESS_RESULT) {
+                Log.i(TAG, "Adresse trouvé");
                 //showToast(getString(R.string.address_found));
             }
+            mAddressRequested = false;
 
         }
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case Constants.MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
+                    // permission was granted, yay! Do the
+                    // contacts-related task you need to do.
+
+                    Log.i(TAG, "here1");
+
+                } else {
+
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+
+                    Log.i(TAG, "here2");
+                }
+                return;
+            }
+
+            // other 'case' lines to check for other
+            // permissions this app might request
+        }
+    }
 
 }

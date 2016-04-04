@@ -9,6 +9,7 @@ import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.ResultReceiver;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.view.View;
@@ -30,10 +31,6 @@ public class HomeActivity extends Activity implements GoogleApiClient.Connection
 
     protected static final String TAG = "home";
 
-    // Keys for storing activity state in the Bundle.
-    protected final static String LOCATION_KEY = "location-key";
-
-
     protected Button BHomeConnexion;
 
     private GoogleApiClient mGoogleApiClient;
@@ -51,6 +48,9 @@ public class HomeActivity extends Activity implements GoogleApiClient.Connection
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+
+        mResultReceiver = new AddressResultReceiver(new Handler());
+
         mLatitudeText = (TextView) findViewById(R.id.latitude);
         mLongitudeText = (TextView) findViewById(R.id.longitude);
         mAddressText = (TextView) findViewById(R.id.addresse);
@@ -93,10 +93,10 @@ public class HomeActivity extends Activity implements GoogleApiClient.Connection
         if (savedInstanceState != null) {
             // Update the value of mCurrentLocation from the Bundle and update the UI to show the
             // correct latitude and longitude.
-            if (savedInstanceState.keySet().contains(LOCATION_KEY)) {
+            if (savedInstanceState.keySet().contains(Constants.LOCATION_KEY)) {
                 // Since LOCATION_KEY was found in the Bundle, we can be sure that mCurrentLocation
                 // is not null.
-                mCurrentLocation = savedInstanceState.getParcelable(LOCATION_KEY);
+                mCurrentLocation = savedInstanceState.getParcelable(Constants.LOCATION_KEY);
             }
             // Check savedInstanceState to see if the address was previously requested.
             if (savedInstanceState.keySet().contains(Constants.ADDRESS_REQUESTED_KEY)) {
@@ -215,7 +215,7 @@ public class HomeActivity extends Activity implements GoogleApiClient.Connection
     }
 
     @Override
-    public void onConnectionFailed(ConnectionResult resultat) {
+    public void onConnectionFailed(@NonNull ConnectionResult resultat) {
         // Refer to the javadoc for ConnectionResult to see what error codes might be returned in
         // onConnectionFailed.
         Log.i(TAG, "Connection failed: ConnectionResult.getErrorCode() = " + resultat.getErrorCode());
@@ -272,15 +272,21 @@ public class HomeActivity extends Activity implements GoogleApiClient.Connection
         savedInstanceState.putString(Constants.LOCATION_ADDRESS_KEY, mAddressOutput);
 
         //Save the current location.
-        savedInstanceState.putParcelable(LOCATION_KEY, mCurrentLocation);
+        savedInstanceState.putParcelable(Constants.LOCATION_KEY, mCurrentLocation);
         super.onSaveInstanceState(savedInstanceState);
     }
 
+    /**
+     * Receiver for data sent from FetchAddressIntentService.
+     */
     class AddressResultReceiver extends ResultReceiver {
         public AddressResultReceiver(Handler handler) {
             super(handler);
         }
 
+        /**
+         *  Receives data sent from FetchAddressIntentService and updates the UI in MainActivity.
+         */
         @Override
         protected void onReceiveResult(int resultCode, Bundle resultData) {
 
@@ -302,7 +308,7 @@ public class HomeActivity extends Activity implements GoogleApiClient.Connection
 
     @Override
     public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[], int[] grantResults) {
+                                           @NonNull String permissions[], @NonNull int[] grantResults) {
         switch (requestCode) {
             case Constants.MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION: {
                 // If request is cancelled, the result arrays are empty.
@@ -321,7 +327,6 @@ public class HomeActivity extends Activity implements GoogleApiClient.Connection
 
                     Log.i(TAG, "here2");
                 }
-                return;
             }
 
             // other 'case' lines to check for other

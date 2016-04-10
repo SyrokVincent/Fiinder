@@ -2,6 +2,8 @@ package com.example.syrok.myfiinder;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Geocoder;
@@ -45,7 +47,7 @@ public class HomeActivity extends Activity implements GoogleApiClient.Connection
     private boolean mAddressRequested;
     protected String mAddressOutput;
     protected TextView mAddressText;
-
+    private boolean inscriptionok = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -68,6 +70,22 @@ public class HomeActivity extends Activity implements GoogleApiClient.Connection
             }
         });
 
+        /**
+         * Bouton qui renvoie à l'activité Inscription
+         */
+        final Button BhomeInscription = (Button) findViewById(R.id.BHomeInscription);
+        BhomeInscription.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent2 = new Intent(HomeActivity.this, InscriptionActivity.class);
+                startActivity(intent2);
+            }
+        });
+
+
+        /**
+         * bouton qui permet de se connecter
+         */
         BHomeConnexion = (Button) findViewById(R.id.BHomeConnexion);
         BHomeConnexion.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -79,6 +97,25 @@ public class HomeActivity extends Activity implements GoogleApiClient.Connection
                 mAddressRequested = true;
             }
         });
+
+        /**
+         * Vérifie si on vient de s'inscrire. Dans ce cas là affiche une pop-up
+         */
+        Intent i = getIntent();
+        Bundle e = i.getExtras();
+        if (e != null) {
+            inscriptionok = (e.getBoolean("inscriptionok"));
+        }
+        if(inscriptionok){
+            new AlertDialog.Builder(this)
+                    .setTitle("Inscription terminée")
+                    .setMessage("Félicitations, vous êtes bien inscrit. Vous pouvez désormais vous connecter.")
+                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {}
+                    })
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .show();
+        }
 
         // Update values using data stored in the Bundle.
         mAddressRequested = false;

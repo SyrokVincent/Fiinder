@@ -11,7 +11,8 @@
          android:icon="@mipmap/ic_launcher"
          android:label="@string/app_name"
          android:supportsRtl="true"
-         android:theme="@style/AppTheme">
+         android:theme="@style/AppTheme"
+         >
 
 
          <!--
@@ -27,7 +28,7 @@
             android:value="@string/google_maps_key" />
 
         <activity
-            android:name=".MainActivity"
+            android:name=".ListActivity"
             android:label="@string/app_name">
             <intent-filter>
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -60,6 +61,8 @@
             </intent-filter>
         </activity>
 
+
+
         <activity
             android:name=".SettingsActivity"
             android:label="@string/app_name"
@@ -69,12 +72,10 @@
             </intent-filter>
         </activity>
 
-        <service
-            android:name=".FetchAddressIntentService"
-            android:exported="false"/>
+         <service android:name="com.example.syrok.myfiinder.LocationService"/>
 
 
-    </application>
+     </application>
 
     <uses-permission android:name="com.examples.syrok.myfiinder.permission.MAPS_RECEIVE" />
     <uses-permission android:name="android.permission.INTERNET" />

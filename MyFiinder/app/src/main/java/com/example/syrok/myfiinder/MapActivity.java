@@ -12,7 +12,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 /**
  * Classe qui affichera la carte, centrée sur le point que nous avons demandé
- * En s'ouvrant elle récupère les informations que MainActivity lui a fournies (latitude et longitude)
+ * En s'ouvrant elle récupère les informations que ListActivity lui a fournies (latitude et longitude)
  */
 public class MapActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -30,16 +30,17 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
     public void onMapReady(GoogleMap googleMap) {
         GoogleMap mMap = googleMap;
     /*
-        Permet de récupérer les informations de l'intent, passées au travers de la classe MainActivity
+        Permet de récupérer les informations de l'intent, passées au travers de la classe ListActivity
         et d'afficher la carte avec les coordonnées récupérées
     */
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
         if(extras!=null) {
-            int longitude = extras.getInt("latitude");
-            int latitude = extras.getInt("longitude");
-
-            LatLng lieu = new LatLng(latitude, longitude);
+            double lieulongitude = extras.getDouble("lieulatitude");
+            double lieulatitude = extras.getDouble("lieulongitude");
+            double userlatitude = extras.getDouble("userlatitude");
+            double userlongitude = extras.getDouble("userlongitude");
+            LatLng lieu = new LatLng(userlatitude, userlongitude);
             mMap.addMarker(new MarkerOptions().position(lieu).title("Lieu choisi"));
             mMap.moveCamera(CameraUpdateFactory.newLatLng(lieu));
         }

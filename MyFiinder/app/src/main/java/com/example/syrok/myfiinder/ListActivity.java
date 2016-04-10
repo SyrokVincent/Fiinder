@@ -1,24 +1,17 @@
 package com.example.syrok.myfiinder;
 
-import android.Manifest;
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.location.Location;
+import android.content.IntentFilter;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
-
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationServices;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -26,16 +19,28 @@ import java.util.Collections;
 /**
  * Activité permettant d'afficher les points d'intérêt proches de l'utilisateur sous forme de liste
  */
-public class MainActivity extends Activity  {
+public class ListActivity extends Activity  {
     private ImageButton BMainImButton;
     private TextView pseudo = null;
-
+    private double userlatitude;
+    private double userlongitude;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Intent intent = new Intent(ListActivity.this, LocationService.class);
+        startService(intent);
+        LocalBroadcastManager.getInstance(this).registerReceiver(
+                new BroadcastReceiver() {
+                    @Override
+                    public void onReceive(Context context, Intent intent) {
+                        userlatitude = intent.getDoubleExtra(LocationService.EXTRA_LATITUDE, 0);
+                        userlongitude = intent.getDoubleExtra(LocationService.EXTRA_LONGITUDE, 0);
 
+                    }
+                }, new IntentFilter(LocationService.ACTION_LOCATION_BROADCAST)
+        );
 
 
         pseudo = (TextView) findViewById(R.id.pseudo);
@@ -61,7 +66,7 @@ public class MainActivity extends Activity  {
             @Override
             public void onClick(View v) {
 
-                Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
+                Intent intent = new Intent(ListActivity.this, SettingsActivity.class);
                 startActivity(intent);
             }
         });
@@ -82,9 +87,11 @@ public class MainActivity extends Activity  {
             @Override
             public void onItemClick(AdapterView<?> a, View v, int position, long id) {
                 Lieu l = (Lieu) lv1.getAdapter().getItem(position);
-                Intent intent = new Intent(MainActivity.this, MapActivity.class);
-                intent.putExtra("longitude", l.getLongitude());
-                intent.putExtra("latitude", l.getLatitude());
+                Intent intent = new Intent(ListActivity.this, MapActivity.class);
+                intent.putExtra("lieulongitude", l.getLongitude());
+                intent.putExtra("lieulatitude", l.getLatitude());
+                intent.putExtra("userlatitude", userlatitude);
+                intent.putExtra("userlongitude", userlongitude);
                 startActivity(intent);
             }
         });

@@ -26,7 +26,7 @@ public class SettingsActivity extends Activity {
         BSettValider.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(SettingsActivity.this, MainActivity.class);
+                Intent intent = new Intent(SettingsActivity.this, ListActivity.class);
 
                 startActivity(intent);
                 //On déclare qu'on ne peut plus sélectionner d'élément

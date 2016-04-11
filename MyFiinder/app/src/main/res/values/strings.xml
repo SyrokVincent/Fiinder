@@ -12,5 +12,6 @@
     <string name="no_address_found">no_address_found</string>
     <string name="address_found">address_found</string>
     <string name="no_geocoder_available">no_geocoder_available</string>
+    <string name="no_location_data_provided">no_location_data_provided</string>
 
 </resources>

@@ -9,7 +9,9 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Message;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.widget.Toast;
@@ -21,10 +23,12 @@ public class LocationService extends Service {
     public static final String
             ACTION_LOCATION_BROADCAST = LocationService.class.getName() + "LocationBroadcast",
             EXTRA_LATITUDE = "extra_latitude",
-            EXTRA_LONGITUDE = "extra_longitude";
+            EXTRA_LONGITUDE = "extra_longitude",
+            EXTRA_ADDRESS = "extra_adresse";
     private LocationManager locationMgr = null;
     private double latitude;
     private double longitude;
+    private String adresse;
     private LocationListener onLocationChange = new LocationListener() {
         @Override
         public void onStatusChanged(String provider, int status, Bundle extras) {
@@ -44,10 +48,6 @@ public class LocationService extends Service {
             latitude = location.getLatitude();
             longitude = location.getLongitude();
             sendBroadcastMessage(location);
-            /*Toast.makeText(getBaseContext(),
-                    "Voici les coordonnées de votre téléphone : " + latitude + " " + longitude,
-                    Toast.LENGTH_LONG).show();*/
-
         }
     };
 
@@ -86,10 +86,29 @@ public class LocationService extends Service {
     }
     private void sendBroadcastMessage(Location location) {
         if (location != null) {
+            ReverseGeocoding locationAddress = new ReverseGeocoding();
+            locationAddress.getAddressFromLocation(latitude, longitude,
+                    getApplicationContext(), new GeocoderHandler());
             Intent intent = new Intent(ACTION_LOCATION_BROADCAST);
+            intent.putExtra(EXTRA_ADDRESS, adresse);
             intent.putExtra(EXTRA_LATITUDE, location.getLatitude());
             intent.putExtra(EXTRA_LONGITUDE, location.getLongitude());
             LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+        }
+    }
+    private class GeocoderHandler extends Handler {
+        @Override
+        public void handleMessage(Message message) {
+            String locationAddress;
+            switch (message.what) {
+                case 1:
+                    Bundle bundle = message.getData();
+                    locationAddress = bundle.getString("address");
+                    break;
+                default:
+                    locationAddress = null;
+            }
+            adresse = locationAddress;
         }
     }
 }

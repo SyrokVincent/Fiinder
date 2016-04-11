@@ -37,12 +37,6 @@ public class HomeActivity extends Activity  {
 
     protected Button BHomeConnexion;
 
-    private GoogleApiClient mGoogleApiClient;
-    protected LocationRequest mLocationRequest;
-    public static Location mCurrentLocation;
-
-    private boolean mAddressRequested;
-    protected String mAddressOutput;
     protected TextView mAddressText;
     private boolean inscriptionok = false;
 
@@ -50,22 +44,27 @@ public class HomeActivity extends Activity  {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        mAddressText = (TextView) findViewById(R.id.addresse);
         /**
          * On démarre le service de localisation et on affiche les coordonnées
          */
         Intent intent = new Intent(HomeActivity.this, LocationService.class);
         startService(intent);
-        final TextView tvlat = (TextView) findViewById(R.id.latitude);
-        final TextView tvlong = (TextView) findViewById(R.id.longitude);
         LocalBroadcastManager.getInstance(this).registerReceiver(
                 new BroadcastReceiver() {
                     @Override
                     public void onReceive(Context context, Intent intent) {
                         double latitude = intent.getDoubleExtra(LocationService.EXTRA_LATITUDE, 0);
                         double longitude = intent.getDoubleExtra(LocationService.EXTRA_LONGITUDE, 0);
-                        tvlat.setText("Lat: " + latitude);
-                        tvlong.setText("Long: " + longitude);
+                        String adresse = intent.getStringExtra(LocationService.EXTRA_ADDRESS);
+                        //Localisation en cours :
+                        if(adresse==null){
+                            Toast toast = Toast.makeText(context, "Localisation en cours", Toast.LENGTH_LONG);
+                            toast.show();
+                        }
+                        if(adresse!=null){
+                            Toast toast = Toast.makeText(context, "Localisation trouvée : \n"+latitude+" "+longitude+"\n"+adresse, Toast.LENGTH_LONG);
+                            toast.show();
+                        }
                     }
                 }, new IntentFilter(LocationService.ACTION_LOCATION_BROADCAST)
         );

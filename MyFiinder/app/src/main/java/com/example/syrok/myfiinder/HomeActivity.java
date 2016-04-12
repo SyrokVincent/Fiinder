@@ -86,7 +86,13 @@ public class HomeActivity extends Activity  {
          * bouton qui permet de se connecter
          */
         BHomeConnexion = (Button) findViewById(R.id.BHomeConnexion);
-
+        BHomeConnexion.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent2 = new Intent(HomeActivity.this, ApiGoogleBidouille.class);
+                startActivity(intent2);
+            }
+        });
 
         /**
          * Vérifie si on vient de s'inscrire. Dans ce cas là affiche une pop-up

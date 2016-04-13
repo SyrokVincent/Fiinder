@@ -26,7 +26,8 @@ public class HomeActivity extends Activity  {
 
     protected TextView mAddressText;
     private boolean inscriptionok = false;
-
+    private double latitude;
+    private double longitude;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,8 +41,8 @@ public class HomeActivity extends Activity  {
                 new BroadcastReceiver() {
                     @Override
                     public void onReceive(Context context, Intent intent) {
-                        double latitude = intent.getDoubleExtra(LocationService.EXTRA_LATITUDE, 0);
-                        double longitude = intent.getDoubleExtra(LocationService.EXTRA_LONGITUDE, 0);
+                        latitude = intent.getDoubleExtra(LocationService.EXTRA_LATITUDE, 0);
+                        longitude = intent.getDoubleExtra(LocationService.EXTRA_LONGITUDE, 0);
                         String adresse = intent.getStringExtra(LocationService.EXTRA_ADDRESS);
                         //Localisation en cours :
                         if(adresse==null){
@@ -51,6 +52,7 @@ public class HomeActivity extends Activity  {
                         if(adresse!=null){
                             Toast toast = Toast.makeText(context, "Localisation trouvée : \n"+latitude+" "+longitude+"\n"+adresse, Toast.LENGTH_LONG);
                             toast.show();
+
                         }
                     }
                 }, new IntentFilter(LocationService.ACTION_LOCATION_BROADCAST)
@@ -65,6 +67,8 @@ public class HomeActivity extends Activity  {
             public void onClick(View v) {
                 Intent intent = new Intent(HomeActivity.this, ListActivity.class);
                 intent.putExtra("pseudo", "Invité");
+                intent.putExtra("firstlatitude", latitude);
+                intent.putExtra("firstlongitude", longitude);
                 startActivity(intent);
             }
         });

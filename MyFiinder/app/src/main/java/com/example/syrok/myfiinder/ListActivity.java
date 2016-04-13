@@ -12,6 +12,7 @@ import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -24,19 +25,22 @@ public class ListActivity extends Activity  {
     private TextView pseudo = null;
     private double userlatitude;
     private double userlongitude;
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Intent intent = new Intent(ListActivity.this, LocationService.class);
-        startService(intent);
+
         LocalBroadcastManager.getInstance(this).registerReceiver(
                 new BroadcastReceiver() {
                     @Override
                     public void onReceive(Context context, Intent intent) {
+
                         userlatitude = intent.getDoubleExtra(LocationService.EXTRA_LATITUDE, 0);
                         userlongitude = intent.getDoubleExtra(LocationService.EXTRA_LONGITUDE, 0);
+
+                            //Toast toast = Toast.makeText(context, "Localisation trouvée : \n"+userlatitude+" "+userlongitude+"\n", Toast.LENGTH_LONG);
+                            //toast.show();
 
                     }
                 }, new IntentFilter(LocationService.ACTION_LOCATION_BROADCAST)
@@ -52,6 +56,8 @@ public class ListActivity extends Activity  {
         pseudo.setText("invité");
         if (e != null) {
             pseudo.setText(e.getString("pseudo"));
+            userlatitude = e.getDouble("firstlatitude");
+            userlongitude = e.getDouble("firstlongitude");
         }
 
         /**

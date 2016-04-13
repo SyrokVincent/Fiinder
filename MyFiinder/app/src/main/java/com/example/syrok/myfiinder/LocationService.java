@@ -26,6 +26,7 @@ public class LocationService extends Service {
             EXTRA_LONGITUDE = "extra_longitude",
             EXTRA_ADDRESS = "extra_adresse";
     private LocationManager locationMgr = null;
+    private Location lastlocationfound;
     private double latitude;
     private double longitude;
     private String adresse;
@@ -44,10 +45,11 @@ public class LocationService extends Service {
 
         @Override
         public void onLocationChanged(Location location) {
-
+            lastlocationfound = location;
             latitude = location.getLatitude();
             longitude = location.getLongitude();
-            sendBroadcastMessage(location);
+            sendBroadcastMessage(lastlocationfound);
+
         }
     };
 
@@ -85,14 +87,14 @@ public class LocationService extends Service {
         locationMgr.removeUpdates(onLocationChange);
     }
     private void sendBroadcastMessage(Location location) {
-        if (location != null) {
+        if (lastlocationfound != null) {
             ReverseGeocoding locationAddress = new ReverseGeocoding();
             locationAddress.getAddressFromLocation(latitude, longitude,
                     getApplicationContext(), new GeocoderHandler());
             Intent intent = new Intent(ACTION_LOCATION_BROADCAST);
             intent.putExtra(EXTRA_ADDRESS, adresse);
-            intent.putExtra(EXTRA_LATITUDE, location.getLatitude());
-            intent.putExtra(EXTRA_LONGITUDE, location.getLongitude());
+            intent.putExtra(EXTRA_LATITUDE, lastlocationfound.getLatitude());
+            intent.putExtra(EXTRA_LONGITUDE, lastlocationfound.getLongitude());
             LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
         }
     }

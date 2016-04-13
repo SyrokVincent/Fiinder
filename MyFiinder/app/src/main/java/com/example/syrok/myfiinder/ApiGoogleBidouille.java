@@ -35,12 +35,13 @@ public class ApiGoogleBidouille extends ListActivity implements GoogleApiClient.
     // the google key
 
     // ============== YOU SHOULD MAKE NEW KEYS ====================//
-    final String GOOGLE_KEY = "AIzaSyD1J2tNd_u8BIpSa2DcA19V_MrH1wjCUCs";
+    final String GOOGLE_KEY = "AIzaSyD1J2tNd_u8BIpSa2DcA19V_MrH1wjCUCs"; //clef API devrait marcher sur android
+    //final String GOOGLE_KEY = "AIzaSyAvLYD_2uSEhQd408pv_SElbr-ON5BcmIA";//clef serveur (pour windows)
 
     // we will need to take the latitude and the logntitude from a certain point
     // this is the center of New York
-    final String latitude = "40.7463956";
-    final String longtitude = "-73.9852992";
+    final String latitude = "43.230987";
+    final String longtitude = "5.437081";
 
     ArrayAdapter myAdapter;
 
@@ -60,18 +61,6 @@ public class ApiGoogleBidouille extends ListActivity implements GoogleApiClient.
     private class Googleplaces extends AsyncTask<View, Integer, String> {
 
         String temp;
-/*
-        @Override
-        protected String doInBackground(View... urls) {
-            // make Call to the url
-            temp = makeCall("https://maps.googleapis.com/maps/api/place/search/json?location=" + latitude + "," + longtitude + "&radius=100&sensor=true&key=" + GOOGLE_KEY);
-
-            //print the call in the console
-            System.out.println("https://maps.googleapis.com/maps/api/place/search/json?location=" + latitude + "," + longtitude + "&radius=100&sensor=true&key=" + GOOGLE_KEY);
-            return "";
-        }
-*/
-
 
         @Override
         protected String doInBackground(View... urls) {

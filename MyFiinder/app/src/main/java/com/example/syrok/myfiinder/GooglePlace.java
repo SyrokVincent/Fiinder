@@ -9,12 +9,16 @@ public class GooglePlace {
     private String category;
     private String rating;
     private String open;
+    private double latitude;
+    private double longitude;
 
     public GooglePlace() {
         this.name = "";
         this.rating = "";
         this.open = "";
         this.setCategory("");
+        this.latitude=0;
+        this.longitude=0;
     }
 
     public void setName(String name) {
@@ -48,5 +52,13 @@ public class GooglePlace {
     public String getOpenNow() {
         return open;
     }
+
+    public void setLatitude(double lat){ this.latitude = lat;}
+
+    public double getLatitude(){return latitude;}
+
+    public void setLongitude(double lng){ this.latitude = lng;}
+
+    public double getLongitude(){return longitude;}
 }
 

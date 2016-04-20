@@ -10,10 +10,10 @@ public class Lieu implements Comparable{
     private int distance;
     private String type;
     private Float note;
-    private int longitude;
-    private int latitude;
+    private double longitude;
+    private double latitude;
 
-    public Lieu(String n, int d, String t, float no, int ln, int la){
+    public Lieu(String n, int d, String t, float no, double ln, double la){
         this.nom = n;
         this.distance = d;
         this.type = t;
@@ -21,13 +21,20 @@ public class Lieu implements Comparable{
         this.longitude = ln;
         this.latitude = la;
     }
-
+    public Lieu(String n, int d, String t, float no){
+        this.nom = n;
+        this.distance = d;
+        this.type = t;
+        this.note = no;
+        this.longitude = 0;
+        this.latitude = 0;
+    }
     public String getNom(){ return nom; }
     public int getDistance(){return distance;}
     public String getType(){return  type;}
     public Float getNote(){ return note; }
-    public int getLongitude(){ return longitude;}
-    public int getLatitude(){return latitude;}
+    public double getLongitude(){ return longitude;}
+    public double getLatitude(){return latitude;}
 
     public void setNom(String s){nom = s;}
     public void setDistance(int i){ distance = i;}

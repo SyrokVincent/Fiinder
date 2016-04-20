@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.View;
 import android.widget.Button;
@@ -32,6 +33,7 @@ public class HomeActivity extends Activity  {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+        PreferenceManager.setDefaultValues(this, R.xml.preferences,false);
         /**
          * On démarre le service de localisation et on affiche les coordonnées
          */
@@ -72,6 +74,7 @@ public class HomeActivity extends Activity  {
                 startActivity(intent);
             }
         });
+
 
         /**
          * Bouton qui renvoie à l'activité Inscription

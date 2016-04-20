@@ -5,7 +5,9 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.View;
 import android.widget.AdapterView;
@@ -23,6 +25,7 @@ import java.util.Collections;
 public class ListActivity extends Activity  {
     private ImageButton BMainImButton;
     private TextView pseudo = null;
+    private String string_poi=""; // qui sera insérée dans la requete
     private double userlatitude;
     private double userlongitude;
     @Override
@@ -30,7 +33,6 @@ public class ListActivity extends Activity  {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Intent intent = new Intent(ListActivity.this, LocationService.class);
-
         LocalBroadcastManager.getInstance(this).registerReceiver(
                 new BroadcastReceiver() {
                     @Override
@@ -76,6 +78,13 @@ public class ListActivity extends Activity  {
                 startActivity(intent);
             }
         });
+
+        /**
+         * On récupère les préférences et on crée string_poi
+         */
+        generer_string_poi();
+        Toast toast = Toast.makeText(this, string_poi, Toast.LENGTH_LONG);
+        toast.show();
         /**
          * Récupère la liste grâce à getListData qui est une liste fixe pour le moment
          * à implémenter -> Récupération des points proches de nous en fonction de NOS coordonnées
@@ -103,7 +112,37 @@ public class ListActivity extends Activity  {
         });
 
     }
+    @Override
+    public void onResume(){
+        super.onResume();
+        generer_string_poi();
+        Toast toast = Toast.makeText(this, string_poi, Toast.LENGTH_LONG);
+        toast.show();
+    }
+    private void generer_string_poi(){
+        string_poi="";
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        if(prefs.getBoolean("poi_art",true))    string_poi+="museum|art_gallery";
+        if(prefs.getBoolean("poi_culture",true) && !string_poi.isEmpty()) string_poi+="|library|university|book_store|school";
+        if(prefs.getBoolean("poi_culture",true) && string_poi.isEmpty()) string_poi+="library|university|book_store|school";
+        if(prefs.getBoolean("poi_argent",true) && !string_poi.isEmpty()) string_poi+="|bank|atm";
+        if(prefs.getBoolean("poi_argent",true) && string_poi.isEmpty()) string_poi+="bank|atm";
+        if(prefs.getBoolean("poi_nourriture_boissons",true) && !string_poi.isEmpty()) string_poi+="|restaurant|bakery|bar|cafe|food";
+        if(prefs.getBoolean("poi_nourriture_boissons",true) && string_poi.isEmpty()) string_poi+="restaurant|bakery|bar|cafe";
+        if(prefs.getBoolean("poi_divertissement",true) && !string_poi.isEmpty()) string_poi+="|amusement_park|casino|aquarium|movie_theater|zoo|bowling_alley|night_club";
+        if(prefs.getBoolean("poi_divertissement",true) && string_poi.isEmpty()) string_poi+="amusement_park|casino|aquarium|movie_theater|zoo|bowling_alley|night_club";
+        if(prefs.getBoolean("poi_shopping",true) && !string_poi.isEmpty()) string_poi+="|store|shoe_store|electronics_store|convenience_store|grocery_or_supermarket|home_goods_store|clothing_store";
+        if(prefs.getBoolean("poi_shopping",true) && string_poi.isEmpty()) string_poi+="store|shoe_store|electronics_store|convenience_store|grocery_or_supermarket|home_goods_store|clothing_store";
+        if(prefs.getBoolean("poi_sport",true) && !string_poi.isEmpty()) string_poi+="|gym|stadium";
+        if(prefs.getBoolean("poi_sport",true) && string_poi.isEmpty()) string_poi+="gym|stadium";
+        if(prefs.getBoolean("poi_sante",true) && !string_poi.isEmpty()) string_poi+="|health|dentist|doctor|hospital|pharmacy|veterinary_care";
+        if(prefs.getBoolean("poi_sante",true) && string_poi.isEmpty()) string_poi+="health|dentist|doctor|hospital|pharmacy|veterinary_care";
+        if(prefs.getBoolean("poi_bien_etre",true) && !string_poi.isEmpty()) string_poi+="|spa|hair_care|beauty_salon";
+        if(prefs.getBoolean("poi_bien_etre",true) && string_poi.isEmpty()) string_poi+="spa|hair_care|beauty_salon";
+        if(prefs.getBoolean("poi_religion",true) && !string_poi.isEmpty()) string_poi+="|cemetery|church|funeral_home|hindu_temple|synagogue";
+        if(prefs.getBoolean("poi_religion",true) && string_poi.isEmpty()) string_poi+="cemetery|church|funeral_home|hindu_temple|synagogue";
 
+    }
     /**
      * Permet de renvoyer la liste des points d'intérêt à proximité
      * à implémenter avec l'API Google Maps

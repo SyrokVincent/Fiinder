@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory
+        android:title="Points d'intérêt"
+        android:key="pref_key_storage_settings">
+        <CheckBoxPreference
+            android:key="poi_art"
+            android:summary="Musée, Exposition"
+            android:title="Art"
+            android:defaultValue="false" />
+        <CheckBoxPreference
+            android:key="poi_culture"
+            android:summary="Bibliothèque, Université"
+            android:title="Culture"
+            android:defaultValue="false" />
+        <CheckBoxPreference
+            android:key="poi_argent"
+            android:summary="Banque, Distributeur"
+            android:title="Argent"
+            android:defaultValue="false" />
+        <CheckBoxPreference
+            android:key="poi_nourriture_boissons"
+            android:summary="Restaurant, Boulangerie, Bar, Café"
+            android:title="Nourriture et Boissons"
+            android:defaultValue="true" />
+        <CheckBoxPreference
+            android:key="poi_divertissement"
+            android:summary="Cinéma, Concert, Casino, Boite de nuit, Parc d'attraction"
+            android:title="Divertissement"
+            android:defaultValue="false" />
+        <CheckBoxPreference
+            android:key="poi_shopping"
+            android:summary="Supermarché, Boutique"
+            android:title="Shopping"
+            android:defaultValue="false" />
+        <CheckBoxPreference
+            android:key="poi_sport"
+            android:summary="Salle de sport, Stade, Terrain de sport"
+            android:title="Sport"
+            android:defaultValue="false" />
+        <CheckBoxPreference
+            android:key="poi_sante"
+            android:summary="Pharmacie, Hôpital, Docteur"
+            android:title="Santé"
+            android:defaultValue="false" />
+        <CheckBoxPreference
+        android:key="poi_bien_etre"
+        android:summary="Spa, Salon de beauté, Esthéticienne"
+        android:title="Bien Être"
+        android:defaultValue="false" />
+        <CheckBoxPreference
+            android:key="poi_religion"
+            android:summary="Lieu de culte, Cimetière"
+            android:title="Religion"
+            android:defaultValue="false" />
+    </PreferenceCategory>
+
+
+</PreferenceScreen>

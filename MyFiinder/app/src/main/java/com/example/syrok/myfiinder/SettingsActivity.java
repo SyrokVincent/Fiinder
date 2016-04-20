@@ -1,41 +1,46 @@
 package com.example.syrok.myfiinder;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceFragment;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
 
 public class SettingsActivity extends Activity {
     private ListView mListInteret = null;
     private String[] mInteret = null;
+    private String string_poi = "";
+
+    public static class SettingsFragment extends PreferenceFragment {
+        @Override
+        public void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+
+            // Load the preferences from an XML resource
+            addPreferencesFromResource(R.xml.preferences);
+        }
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
-        mListInteret = (ListView) findViewById(R.id.listInteret);
-        mInteret = new String[]{"Cinéma", "Musique", "Restaurant", "Sport"};
-        mListInteret.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_multiple_choice, mInteret));
-        mListInteret.setItemChecked(1, true);
+        /**
+         * On récupère les données du fragment (préférences enregistrées)
+         */
+        getFragmentManager().beginTransaction()
+                .replace(android.R.id.content, new SettingsFragment())
+                .commit();
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
 
-        final Button BSettValider = (Button) findViewById(R.id.BSettValider);
-        BSettValider.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(SettingsActivity.this, ListActivity.class);
-
-                startActivity(intent);
-                //On déclare qu'on ne peut plus sélectionner d'élément
-                mListInteret.setChoiceMode(ListView.CHOICE_MODE_NONE);
-                //On affiche un layout qui ne permet pas de sélection
-                mListInteret.setAdapter(new ArrayAdapter<String>(SettingsActivity.this, android.R.layout.simple_list_item_1, mInteret));
-
-
-            }
-        });
     }
 }

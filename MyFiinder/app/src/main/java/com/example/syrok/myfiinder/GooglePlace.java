@@ -57,7 +57,7 @@ public class GooglePlace {
 
     public double getLatitude(){return latitude;}
 
-    public void setLongitude(double lng){ this.latitude = lng;}
+    public void setLongitude(double lng){ this.longitude = lng;}
 
     public double getLongitude(){return longitude;}
 }

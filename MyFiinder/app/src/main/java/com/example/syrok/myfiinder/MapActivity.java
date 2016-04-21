@@ -5,8 +5,10 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMapOptions;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
@@ -41,8 +43,15 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
             double userlatitude = extras.getDouble("userlatitude");
             double userlongitude = extras.getDouble("userlongitude");
             LatLng lieu = new LatLng(userlatitude, userlongitude);
+            GoogleMapOptions optionsmap = new GoogleMapOptions();
+            CameraPosition position = new CameraPosition(lieu,14,0,0);
+
+            optionsmap.camera(position);
+            optionsmap.compassEnabled(true);
+
             mMap.addMarker(new MarkerOptions().position(lieu).title("Lieu choisi"));
-            mMap.moveCamera(CameraUpdateFactory.newLatLng(lieu));
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(lieu,14));
+
         }
     }
 }

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="timeListArray">
+        <item>200m</item>
+        <item>400m</item>
+        <item>600m</item>
+        <item>800m</item>
+        <item>1 000m</item>
+        <item>2 000m</item>
+        <item>5 000m</item>
+        <item>10 000m</item>
+    </string-array>
+
+    <!--This is going to be in seconds-->
+    <string-array name="timeListValues">
+        <item>200</item>
+        <item>400</item>
+        <item>600</item>
+        <item>800</item>
+        <item>1000</item>
+        <item>2000</item>
+        <item>5000</item>
+        <item>10000</item>
+    </string-array>
+</resources>

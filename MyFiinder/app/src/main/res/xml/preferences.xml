@@ -1,6 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <PreferenceCategory
+        android:title="Rayon d'effet"
+        android:key="pref_rayon_settings">
+        <com.example.syrok.myfiinder.SliderPreference
+            android:defaultValue="1000"
+            android:dialogMessage="Choix de distance"
+            android:entries="@array/timeListArray"
+            android:entryValues="@array/timeListValues"
+            android:key="distance"
+            android:summary="Choix de la distance"
+            android:title="Distance"
+            />
+    </PreferenceCategory>
+    <PreferenceCategory
         android:title="Points d'intérêt"
         android:key="pref_key_storage_settings">
         <CheckBoxPreference

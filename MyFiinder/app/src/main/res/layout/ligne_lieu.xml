@@ -21,16 +21,18 @@
         android:layout_height="wrap_content"
         android:textStyle="bold"
         android:layout_alignParentTop="true"
-        android:layout_toRightOf="@id/imageView"
-        />
+        android:layout_toRightOf="@+id/imageView"
+        android:layout_toEndOf="@+id/imageView"
+        android:layout_marginLeft="39dp"
+        android:layout_marginStart="39dp" />
     <TextView
         android:text=" DIST"
         android:id="@+id/distance"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/note"
         android:layout_alignParentRight="true"
-        android:layout_marginRight="10dp"
-        />
+        android:layout_alignParentEnd="true" />
 
     <RatingBar
         android:id="@+id/note"
@@ -41,6 +43,6 @@
         android:isIndicator="true"
         style="@style/foodRatingBar"
         android:layout_alignBottom="@+id/imageView"
-        android:layout_toRightOf="@+id/imageView"
-        android:layout_toEndOf="@+id/imageView" />
+        android:layout_alignLeft="@+id/nomLieu"
+        android:layout_alignStart="@+id/nomLieu" />
 </RelativeLayout>

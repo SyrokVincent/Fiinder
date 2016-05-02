@@ -214,8 +214,9 @@ public class ListActivity extends Activity implements GoogleApiClient.Connection
                     }catch(Exception e){System.out.println("ouch le parsing!");}
                     //Calcul de la distance
                     int dist = calcul_distance(venuesList.get(i).getLatitude(), venuesList.get(i).getLongitude(), userlatitude, userlongitude);
-                    //System.out.println(venuesList.get(i).getLatitude()+ ","+venuesList.get(i).getLongitude()+","+userlatitude+","+userlongitude+"   "+ dist);
-                    liste_resultats.add(new Lieu(venuesList.get(i).getName(), dist, venuesList.get(i).getCategory(), note, venuesList.get(i).getLatitude(), venuesList.get(i).getLongitude()));
+                    System.out.println(venuesList.get(i).getCategory());
+                    Lieu l = new Lieu(venuesList.get(i).getName(), dist, venuesList.get(i).getCategory(), note, venuesList.get(i).getLatitude(), venuesList.get(i).getLongitude());
+                    liste_resultats.add(l);
                 }
                 Collections.sort(liste_resultats);
                 final ListView lv1 = (ListView) findViewById(R.id.location_list);

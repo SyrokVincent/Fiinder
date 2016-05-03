@@ -1,6 +1,7 @@
 package com.example.syrok.myfiinder;
 
 import android.content.Context;
+import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -88,6 +89,7 @@ public class CustomListAdapter extends BaseAdapter {
         TextView distanceView;
         TextView typeView;
         RatingBar barView;
+        Layout layout;
     }
 
 }

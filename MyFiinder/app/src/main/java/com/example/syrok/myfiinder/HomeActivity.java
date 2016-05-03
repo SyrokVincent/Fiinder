@@ -48,12 +48,12 @@ public class HomeActivity extends Activity  {
                         String adresse = intent.getStringExtra(LocationService.EXTRA_ADDRESS);
                         //Localisation en cours :
                         if(adresse==null){
-                            Toast toast = Toast.makeText(context, "Localisation en cours", Toast.LENGTH_LONG);
-                            toast.show();
+                            //Toast toast = Toast.makeText(context, "Localisation en cours", Toast.LENGTH_LONG);
+                            //toast.show();
                         }
                         if(adresse!=null){
-                            Toast toast = Toast.makeText(context, "Localisation trouvée : \n"+latitude+" "+longitude+"\n"+adresse, Toast.LENGTH_LONG);
-                            toast.show();
+                           // Toast toast = Toast.makeText(context, "Localisation trouvée : \n"+latitude+" "+longitude+"\n"+adresse, Toast.LENGTH_LONG);
+                            //toast.show();
 
                         }
                     }

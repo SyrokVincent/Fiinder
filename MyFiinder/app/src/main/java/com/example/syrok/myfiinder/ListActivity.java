@@ -115,8 +115,8 @@ public class ListActivity extends Activity implements GoogleApiClient.Connection
          * On récupère les préférences et on crée string_poi qui sera inclus dans la requête
          */
         generer_string_poi();
-        Toast toast = Toast.makeText(this, string_poi, Toast.LENGTH_LONG);
-        toast.show();
+        //Toast toast = Toast.makeText(this, string_poi, Toast.LENGTH_LONG);
+        //toast.show();
 
         /**
          * Récupère la liste grâce à getListData qui est une liste fixe pour le moment
@@ -139,8 +139,8 @@ public class ListActivity extends Activity implements GoogleApiClient.Connection
         // start the AsyncTask that makes the call for the venus search.
         Googleplaces GP = new Googleplaces();
         GP.execute();
-        Toast toast = Toast.makeText(this, string_poi, Toast.LENGTH_LONG);
-        toast.show();
+        //Toast toast = Toast.makeText(this, string_poi, Toast.LENGTH_LONG);
+        //toast.show();
     }
     private void generer_string_poi() {
         string_poi = "";
@@ -235,11 +235,12 @@ public class ListActivity extends Activity implements GoogleApiClient.Connection
                         intent.putExtra("lieulatitude", l.getLatitude());
                         intent.putExtra("userlatitude", userlatitude);
                         intent.putExtra("userlongitude", userlongitude);
+                        intent.putExtra("nomlieu", l.getNom());
                         startActivity(intent);
                     }
                 });
                // myAdapter = new ArrayAdapter(ApiGoogleBidouille.this, R.layout.row_layout, R.id.listText, listTitle);
-                Toast.makeText(getApplicationContext(), "Le traitement asynchrone est terminé", Toast.LENGTH_LONG).show();
+               // Toast.makeText(getApplicationContext(), "Le traitement asynchrone est terminé", Toast.LENGTH_LONG).show();
             }
 
         }
